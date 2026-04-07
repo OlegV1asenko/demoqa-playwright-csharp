@@ -47,7 +47,7 @@ jobs:
       
     - name: Run Tests
       continue-on-error: true 
-      run: dotnet test DemoQA/DemoQA.csproj --logger "trx;LogFileName=test-results.trx"
+      run: dotnet test DemoQA/DemoQA.csproj --logger "trx;LogFileName=test-results.trx" --logger "console;verbosity=detailed"
       
     - name: Publish Test Report
       uses: dorny/test-reporter@v1
