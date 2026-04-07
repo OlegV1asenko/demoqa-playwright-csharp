@@ -39,7 +39,7 @@ Every execution of the CI/CD pipeline automatically generates and deploys an int
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/OlegV1asenko/demoqa-playwright-csharp.git](https://github.com/OlegV1asenko/demoqa-playwright-csharp.git)
+    git clone https://github.com/OlegV1asenko/demoqa-playwright-csharp.git
     ```
 2.  **Install dependencies:**
     ```bash
