@@ -1,0 +1,26 @@
+# IDEs and Editors
+.vscode/
+.idea/
+*.suo
+*.user
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+*.dll
+*.pdb
+*.exe
+*.cache
+*.swp
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# Other
+*.log
+.DS_Store
