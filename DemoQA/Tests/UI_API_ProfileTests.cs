@@ -50,7 +50,7 @@ public class UI_API_ProfileTests : TestBase
             // 4. UI Injection - Seed auth data directly into Context and LocalStorage
             await Page.Context.AddCookiesAsync(new[]
             {
-                new Microsoft.Playwright.Cookie { Name = "userID", Value = userId!, Domain = "demoqa.com", Path = "/" },
+                new Cookie { Name = "userID", Value = userId!, Domain = "demoqa.com", Path = "/" },
                 new Microsoft.Playwright.Cookie { Name = "userName", Value = username, Domain = "demoqa.com", Path = "/" },
                 new Microsoft.Playwright.Cookie { Name = "token", Value = token, Domain = "demoqa.com", Path = "/" },
                 new Microsoft.Playwright.Cookie { Name = "expires", Value = expires, Domain = "demoqa.com", Path = "/" }
