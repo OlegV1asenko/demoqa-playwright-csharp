@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [ main ]
 
-# Grant permissions to GitHub Actions to create check runs (Test Reports)
 permissions:
   contents: read
   actions: read
@@ -28,12 +27,25 @@ jobs:
         
     - name: Build project
       run: dotnet build DemoQA/DemoQA.csproj
-      
+
+    - name: Cache Playwright Browsers
+      id: cache-playwright
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-browsers-${{ runner.os }}-${{ hashFiles('**/DemoQA.csproj') }}
+        restore-keys: |
+          playwright-browsers-${{ runner.os }}-
+
     - name: Install Playwright Browsers & Dependencies
+      if: steps.cache-playwright.outputs.cache-hit != 'true'
       run: pwsh DemoQA/bin/Debug/net9.0/playwright.ps1 install --with-deps
       
+    - name: Install System Dependencies Only
+      if: steps.cache-playwright.outputs.cache-hit == 'true'
+      run: pwsh DemoQA/bin/Debug/net9.0/playwright.ps1 install-deps
+      
     - name: Run Tests
-      # Add continue-on-error to ensure the report is generated even if a test fails
       continue-on-error: true 
       run: dotnet test DemoQA/DemoQA.csproj --logger "trx;LogFileName=test-results.trx"
       
@@ -45,10 +57,10 @@ jobs:
         path: '**/*.trx'
         reporter: dotnet-trx
 
-    - name: Upload Raw Test Results
+    - name: Upload Playwright Traces
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: playwright-test-results
-        path: '**/*.trx'
+        name: playwright-traces
+        path: '**/*.zip'
         retention-days: 14
