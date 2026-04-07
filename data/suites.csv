@@ -1,0 +1,4 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","3917","ProfilePage_Should_Show_Username_When_Injected_Via_LocalStorage","","Tue Apr 07 18:34:48 UTC 2026","passed","Tue Apr 07 18:34:52 UTC 2026","","DemoQA.Tests.UI_API_ProfileTests","DemoQA.Tests.UI_API_ProfileTests",""
+"","1433","ShouldSubmitPracticeFormSuccessfully","","Tue Apr 07 18:34:52 UTC 2026","passed","Tue Apr 07 18:34:54 UTC 2026","","DemoQA.Tests.UI_PracticeFormTests","DemoQA.Tests.UI_PracticeFormTests",""
+"","7459","Should_Create_Login_Get_And_Delete_User_Successfully","","Tue Apr 07 18:34:41 UTC 2026","passed","Tue Apr 07 18:34:48 UTC 2026","","DemoQA.Tests.API_AccountTests","DemoQA.Tests.API_AccountTests",""
