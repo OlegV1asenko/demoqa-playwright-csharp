@@ -7,15 +7,13 @@ on:
     branches: [ main ]
 
 permissions:
-  contents: read
+  contents: write
   actions: read
   checks: write
 
 jobs:
   test:
-    timeout-minutes: 60
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
@@ -34,33 +32,43 @@ jobs:
       with:
         path: ~/.cache/ms-playwright
         key: playwright-browsers-${{ runner.os }}-${{ hashFiles('**/DemoQA.csproj') }}
-        restore-keys: |
-          playwright-browsers-${{ runner.os }}-
 
-    - name: Install Playwright Browsers & Dependencies
+    - name: Install Playwright Browsers
       if: steps.cache-playwright.outputs.cache-hit != 'true'
       run: pwsh DemoQA/bin/Debug/net9.0/playwright.ps1 install --with-deps
-      
-    - name: Install System Dependencies Only
-      if: steps.cache-playwright.outputs.cache-hit == 'true'
-      run: pwsh DemoQA/bin/Debug/net9.0/playwright.ps1 install-deps
       
     - name: Run Tests
       continue-on-error: true 
       run: dotnet test DemoQA/DemoQA.csproj --logger "trx;LogFileName=test-results.trx" --logger "console;verbosity=detailed"
       
-    - name: Publish Test Report
-      uses: dorny/test-reporter@v1
-      if: always()
-      with:
-        name: 🧪 Playwright Test Results
-        path: '**/*.trx'
-        reporter: dotnet-trx
-
-    - name: Upload Playwright Traces
+    - name: Upload Test Results
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: playwright-traces
         path: '**/*.zip'
-        retention-days: 14
+
+    - name: Load test report history
+      uses: actions/checkout@v4
+      if: always()
+      continue-on-error: true
+      with:
+        ref: gh-pages
+        path: gh-pages
+
+    - name: Build Allure Report
+      uses: simple-elf/allure-report-action@master
+      if: always()
+      with:
+        allure_results: DemoQA/TestResults
+        gh_pages: gh-pages
+        allure_report: allure-report
+        allure_history: allure-history
+
+    - name: Deploy report to Github Pages
+      if: always()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: gh-pages
+        publish_dir: allure-report
