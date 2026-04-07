@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ main ]
 
+# Grant permissions to GitHub Actions to create check runs (Test Reports)
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
 jobs:
   test:
     timeout-minutes: 60
@@ -27,9 +33,19 @@ jobs:
       run: pwsh DemoQA/bin/Debug/net9.0/playwright.ps1 install --with-deps
       
     - name: Run Tests
+      # Add continue-on-error to ensure the report is generated even if a test fails
+      continue-on-error: true 
       run: dotnet test DemoQA/DemoQA.csproj --logger "trx;LogFileName=test-results.trx"
       
-    - name: Upload Test Results
+    - name: Publish Test Report
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: 🧪 Playwright Test Results
+        path: '**/*.trx'
+        reporter: dotnet-trx
+
+    - name: Upload Raw Test Results
       if: always()
       uses: actions/upload-artifact@v4
       with:
