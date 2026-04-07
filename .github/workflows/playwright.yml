@@ -1,0 +1,38 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET 9
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+        
+    - name: Build project
+      run: dotnet build DemoQA/DemoQA.csproj
+      
+    - name: Install Playwright Browsers & Dependencies
+      run: pwsh DemoQA/bin/Debug/net9.0/playwright.ps1 install --with-deps
+      
+    - name: Run Tests
+      run: dotnet test DemoQA/DemoQA.csproj --logger "trx;LogFileName=test-results.trx"
+      
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-test-results
+        path: '**/*.trx'
+        retention-days: 14
